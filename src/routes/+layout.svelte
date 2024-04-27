@@ -2,25 +2,24 @@
 	import { Navigation, Header } from '$components';
 	import { page } from '$app/stores';
 	import NProgress from 'nprogress';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { hideAll } from 'tippy.js';
-	import type { LayoutData } from './$types';
-
+	import 'nprogress/nprogress.css';
 	import 'modern-normalize/modern-normalize.css';
 	import '../styles/main.scss';
-	import 'nprogress/nprogress.css';
+	import type { LayoutData } from './$types';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
 
 	NProgress.configure({ showSpinner: false });
 
-	export let data: LayoutData;
-
 	let topbar: HTMLElement;
 	let scrollY: number;
-	let headerOpacity: number = 0;
+	let headerOpacity = 0;
 
 	$: if (topbar) {
 		headerOpacity = scrollY / topbar.offsetHeight < 1 ? scrollY / topbar.offsetHeight : 1;
 	}
+
+	export let data: LayoutData;
 
 	$: user = data.user;
 
@@ -37,7 +36,7 @@
 <svelte:window bind:scrollY />
 
 <svelte:head>
-	<title>Spotify {$page.data.title ? `- ${$page.data.title}` : ''}</title>
+	<title>Spotify{$page.data.title ? ` - ${$page.data.title}` : ''}</title>
 </svelte:head>
 
 {#if user}
@@ -50,7 +49,6 @@
 			<Navigation desktop={true} />
 		</div>
 	{/if}
-
 	<div id="content">
 		{#if user}
 			<div id="topbar" bind:this={topbar}>
@@ -62,11 +60,8 @@
 				<Header />
 			</div>
 		{/if}
-
 		<main id="main-content" class:logged-in={user}>
 			<slot />
-
-			<div style:height="10000px"></div>
 		</main>
 	</div>
 </div>
@@ -81,7 +76,6 @@
 		}
 		#content {
 			flex: 1;
-
 			#topbar {
 				position: fixed;
 				height: var(--header-height);
@@ -90,19 +84,16 @@
 				align-items: center;
 				width: 100%;
 				z-index: 100;
-
 				:global(html.no-js) & {
 					position: sticky;
 					top: 0;
 					background-color: var(--header-color);
 					height: auto;
-					padding: 10px;
-
+					padding: 10px 20px;
 					@include breakpoint.up('md') {
 						position: fixed;
 					}
 				}
-
 				.topbar-bg {
 					position: absolute;
 					width: 100%;
@@ -111,23 +102,18 @@
 					left: 0;
 					z-index: -1;
 				}
-
 				@include breakpoint.up('md') {
 					padding: 0 30px;
 					width: calc(100% - var(--sidebar-width));
 				}
 			}
-
 			main#main-content {
 				padding: 30px 15px 60px;
-
 				@include breakpoint.up('md') {
 					padding: 30px 30px 60px;
 				}
-
-				.logged-in {
+				&.logged-in {
 					padding-top: calc(30px + var(--header-height));
-
 					:global(html.no-js) & {
 						@include breakpoint.down('md') {
 							padding-top: 30px;
