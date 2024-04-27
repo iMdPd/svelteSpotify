@@ -21,6 +21,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "^8.56.0",
 		"@types/node": "^20.12.5",
+		"@types/nprogress": "^0.2.3",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
 		"eslint": "^8.56.0",
@@ -44,6 +45,8 @@
 		"@unsass/breakpoint": "^2.4.0",
 		"lucide-svelte": "^0.365.0",
 		"modern-normalize": "^2.0.0",
-		"pkce-gen": "^1.1.0"
+		"nprogress": "^0.2.0",
+		"pkce-gen": "^1.1.0",
+		"tippy.js": "^6.3.7"
 	}
 }
