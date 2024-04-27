@@ -1,7 +1,8 @@
 <script lang="ts">
 	import 'modern-normalize/modern-normalize.css';
 	import '../styles/main.scss';
-	import { Navigation } from '$components';
+
+	import { Navigation, Header } from '$components';
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
@@ -31,10 +32,9 @@
 			<div
 				class="topbar-bg"
 				style:background-color="var(--header-color)"
-				style:opacity={headerOpacity}
+				style:opacity={`${headerOpacity}`}
 			/>
-
-			topbar
+			<Header />
 		</div>
 		<main id="main-content" class:logged-in={user}>
 			<slot />
