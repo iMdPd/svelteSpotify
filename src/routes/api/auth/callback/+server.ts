@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url, cookies, fetch }) => {
 		throw error(400, 'State Mismatch!');
 	}
 
-	const payload = {
+	const response = await fetch('https://accounts.spotify.com/api/token', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -28,17 +28,15 @@ export const GET: RequestHandler = async ({ url, cookies, fetch }) => {
 			code_verifier: storedChallengeVerifier || '',
 			client_id: SPOTIFY_APP_CLIENT_ID
 		})
-	};
-
-	const response = await fetch('https://accounts.spotify.com/api/token', payload);
+	});
 	const responseJSON = await response.json();
 
 	if (responseJSON.error) {
 		throw error(400, responseJSON.error_description);
 	}
 
-	cookies.delete('spotify_auth_state', { path: '/' });
-	cookies.delete('spotify_auth_challenge_verifier', { path: '/' });
+	cookies.delete('spotify_auth_state');
+	cookies.delete('spotify_auth_challenge_verifier');
 	cookies.set('refresh_token', responseJSON.refresh_token, { path: '/' });
 	cookies.set('access_token', responseJSON.access_token, { path: '/' });
 

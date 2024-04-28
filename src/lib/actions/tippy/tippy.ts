@@ -11,12 +11,11 @@ export default function (node: HTMLElement, options?: Partial<ExtendedProps>) {
 	const _options = options ? { ...options, plugins } : { plugins };
 	const instance = tippy(node, _options);
 	return {
-		update(newOptions: ExtendedProps) {
+		update(newOptions: Partial<ExtendedProps>) {
 			const _newOptions = newOptions ? { ...newOptions, plugins } : { plugins };
 			instance.setProps(_newOptions);
 		},
-
-		onDestroy() {
+		destroy() {
 			instance.destroy();
 		}
 	};
