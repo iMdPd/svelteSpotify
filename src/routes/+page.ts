@@ -1,14 +1,17 @@
 import type { PageLoad } from './$types';
 import { fetchRefresh } from '$helpers';
 
+const SPOTIFY_API = '/api/spotify/'
+const LIMIT = 'limit=6'
+
 export const load: PageLoad = async ({ fetch: _fetch, parent }) => {
 	const fetch = (path: string) => fetchRefresh(_fetch, path);
 	const { user } = await parent();
-	const newReleases = fetch('/api/spotify/browse/new-releases?limit=6');
-	const featuredPlaylists = fetch('/api/spotify/browse/featured-playlists?limit=6');
-	const userPlaylists = fetch(`/api/spotify/users/${user?.id}/playlists?limit=6`);
+	const newReleases = fetch(`${SPOTIFY_API}browse/new-releases?${LIMIT}`);
+	const featuredPlaylists = fetch(`${SPOTIFY_API}browse/featured-playlists?${LIMIT}`);
+	const userPlaylists = fetch(`${SPOTIFY_API}users/${user?.id}/playlists?${LIMIT}`);
 
-	const catsRes = await fetch(`api/spotify/browse/categories`);
+	const catsRes = await fetch(`${SPOTIFY_API}browse/categories`);
 	const catsResJSON: SpotifyApi.MultipleCategoriesResponse | undefined = catsRes.ok
 		? await catsRes.json()
 		: undefined;
@@ -18,7 +21,7 @@ export const load: PageLoad = async ({ fetch: _fetch, parent }) => {
 		: [];
 
 	const randomCatsPromises = randomCats.map((cat) =>
-		fetch(`/api/spotify/browse/categories/${cat.id}/playlists?limit=6`)
+		fetch(`${SPOTIFY_API}browse/categories/${cat.id}/playlists?${LIMIT}`)
 	);
 
 	const [newReleasesRes, featuredPlaylistsRes, userPlaylistsRes, ...randomCatsRes] =
