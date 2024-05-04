@@ -6,8 +6,6 @@
 	type ArtistType = SpotifyApi.ArtistObjectFull;
 
 	export let item: AlbumType | PlaylistType | ArtistType;
-
-	console.log(item);
 </script>
 
 <div class="card {item.type}">
