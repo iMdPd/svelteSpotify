@@ -46,7 +46,7 @@
 		position: relative;
 		z-index: 10;
 		min-height: 300px;
-		background-image: linear-gradient(0deg, var(--bg-color) rgba(0, 0, 0, 0.9));
+		background-image: linear-gradient(0deg, var(--bg-color), rgba(0, 0, 0, 0.1));
 		margin: 0 -30px;
 		padding: 30px;
 	}
@@ -70,23 +70,25 @@
 			height: 150%;
 			z-index: 1;
 		}
-
 		.info {
-			text-transform: uppercase;
-			font-weight: 600;
-			font-size: functions.toRem(12);
-			margin: 0;
 			z-index: 10;
-		}
 
-		.title {
-			font-size: functions.toRem(32);
-			margin: 5px 0 0;
-			@include breakpoint.up('md') {
-				font-size: functions.toRem(36);
+			.type {
+				text-transform: uppercase;
+				font-weight: 600;
+				font-size: functions.toRem(12);
+				margin: 0;
 			}
-			@include breakpoint.up('lg') {
-				font-size: functions.toRem(54);
+
+			.title {
+				font-size: functions.toRem(32);
+				margin: 5px 0 0;
+				@include breakpoint.up('md') {
+					font-size: functions.toRem(36);
+				}
+				@include breakpoint.up('lg') {
+					font-size: functions.toRem(54);
+				}
 			}
 		}
 
