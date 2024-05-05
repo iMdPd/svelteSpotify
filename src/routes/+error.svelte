@@ -4,7 +4,7 @@
 	import { Button, LogoutButton } from '$components';
 
 	let isRetrying = false;
-	const retryRoutes = ['album/[id]'];
+	const retryRoutes = ['/album/[id]', '/playlist/[id]'];
 </script>
 
 <svelte:head>
@@ -12,9 +12,8 @@
 </svelte:head>
 
 <div class="content">
-	<h1>
-		{$page.error?.message}
-	</h1>
+	<h1>{$page.error?.message}</h1>
+
 	{#if $page.status === 404}
 		<p>The page you are trying to access cannot be found.</p>
 		<div class="buttons">
@@ -30,15 +29,14 @@
 		</div>
 	{/if}
 
-	{#if ![401, 404].includes($page.status) && $page.route.id && retryRoutes.includes($page.route.id)}
-		<p>Your current session has expired, please logout and login again.</p>
+	{#if ![404, 401].includes($page.status) && $page.route.id && retryRoutes.includes($page.route.id)}
 		<div class="buttons">
 			<Button
 				disabled={isRetrying}
 				element="button"
 				on:click={async () => {
 					isRetrying = true;
-					await invalidate(`:app${$page.route.id}`);
+					await invalidate(`app:${$page.route.id}`);
 					isRetrying = false;
 				}}>Retry</Button
 			>
@@ -49,21 +47,21 @@
 <style lang="scss">
 	.content {
 		text-align: center;
+	}
 
-		h1 {
-			font-size: functions.toRem(40);
-		}
+	h1 {
+		font-size: functions.toRem(40);
+	}
 
-		p {
-			font-size: functions.toRem(20);
-		}
+	p {
+		font-size: functions.toRem(20);
+	}
 
-		.buttons {
-			margin-top: 40px;
-
-			:global(a) {
-				margin: 0 5px;
-			}
+	.buttons {
+		margin-top: 40px;
+		
+		:global(a) {
+			margin: 0 5px;
 		}
 	}
 </style>
