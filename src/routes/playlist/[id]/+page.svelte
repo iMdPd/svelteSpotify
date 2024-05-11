@@ -44,8 +44,8 @@
 </script>
 
 <ItemPage
-	title={playlist.name}
-	image={playlist.images.length > 0 ? playlist.images[0].url : undefined}
+	title={playlist?.name}
+	image={playlist?.images?.length > 0 ? playlist.images[0].url : undefined}
 	{color}
 	type={playlist.type}
 >
@@ -53,7 +53,7 @@
 		<p class="playlist-description">{@html playlist.description}</p>
 		<p class="meta">
 			<span>{playlist.owner.display_name}</span>
-			<span>{followersFormat.format(playlist.followers.total)}</span>
+			<span>{followersFormat.format(playlist.followers.total)} Followers</span>
 			<span>{playlist.tracks.total} Tracks</span>
 		</p>
 	</div>
@@ -100,7 +100,7 @@
 		{/if}
 	</div>
 
-	{#if playlist.tracks.items.length > 0}
+	{#if playlist?.tracks?.items?.length > 0}
 		<TrackList tracks={filteredTracks} />
 
 		<Pagination paginatedList={tracks} on:loadmore={loadMoreTracks} {isLoading} />
@@ -144,25 +144,6 @@
 			&:first-child {
 				font-weight: 600;
 			}
-		}
-	}
-
-	.load-more {
-		padding: 15px;
-		text-align: center;
-
-		:global(html.no-js) & {
-			display: none;
-		}
-	}
-
-	.pagination {
-		display: none;
-		margin-top: 40px;
-		justify-content: space-between;
-
-		:global(html.no-js) & {
-			display: flex;
 		}
 	}
 

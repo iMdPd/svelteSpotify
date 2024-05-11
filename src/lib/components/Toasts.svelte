@@ -5,7 +5,7 @@
 	import { X } from 'lucide-svelte';
 </script>
 
-{#if $toasts.length > 0}
+{#if $toasts?.length > 0}
 	<div class="toasts">
 		{#each $toasts as toast (toast.id)}
 			<div

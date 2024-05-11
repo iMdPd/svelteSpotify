@@ -61,7 +61,7 @@
 				<p class="artists">
 					{#each track.artists as artist, artistIndex}
 						<a href="/artist/{artist.id}">{artist.name}</a
-						>{#if artistIndex < track.artists.length - 1}{', '}{/if}
+						>{#if artistIndex < track?.artists?.length - 1}{', '}{/if}
 					{/each}
 				</p>
 			</div>

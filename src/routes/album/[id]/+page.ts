@@ -13,7 +13,7 @@ export const load: PageLoad = async ({ fetch, params, depends, route }) => {
 	const albumJSON: SpotifyApi.SingleAlbumResponse = await albumRes.json();
 
 	let color = null;
-	if (albumJSON.images.length > 0) {
+	if (albumJSON.images?.length > 0) {
 		const colorRes = await fetch(
 			`/api/average-color?${new URLSearchParams({
 				image: albumJSON.images[0].url

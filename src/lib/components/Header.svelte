@@ -33,7 +33,7 @@
 					hideOnPopperBlur: true
 				}}
 			>
-				{#if user?.images && user.images.length > 0}
+				{#if user?.images && user?.images?.length > 0}
 					<img src={user.images[0].url} alt="" />
 				{/if}
 				{user?.display_name} <span class="visually-hidden">Profile menu</span>
