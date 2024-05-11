@@ -2,55 +2,68 @@ import { fetchRefresh } from '$helpers';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch: _fetch, params, depends, route, url }) => {
+export const load: PageLoad = async ({ fetch: _fetch, params, depends, route, url, parent }) => {
 	depends(`app:${route.id}`);
+	const { user } = await parent();
+
 	const fetch = (path: string) => fetchRefresh(_fetch, path);
 
 	const limit = 100;
 	const page = url.searchParams.get('page');
 
-	const playlistResponse = await fetch(`/api/spotify/playlists/${params.id}`);
+	const [playlistRes, isFollowingRes] = await Promise.all([
+		fetch(`/api/spotify/playlists/${params.id}`),
+		fetch(
+			`/api/spotify/playlists/${params.id}/followers/contains?${new URLSearchParams({
+				ids: user ? user.id : ''
+			}).toString()}`
+		)
+	]);
 
-	if (!playlistResponse.ok) {
-		throw error(playlistResponse.status, 'Failed to load playlist.');
+	if (!playlistRes.ok) {
+		throw error(playlistRes.status, 'Failed to load playlist!');
 	}
 
-	const playlistResponseJSON: SpotifyApi.SinglePlaylistResponse = await playlistResponse.json();
+	let isFollowing: boolean | null = null;
+
+	if (isFollowingRes.ok) {
+		const isFollowingJSON: SpotifyApi.UsersFollowPlaylistResponse = await isFollowingRes.json();
+		isFollowing = isFollowingJSON[0];
+	}
+
+	const playlistResJSON: SpotifyApi.SinglePlaylistResponse = await playlistRes.json();
 
 	if (page && page !== '1') {
-		const tracksResponse = await fetch(
+		const tracksRes = await fetch(
 			`/api/spotify/playlists/${params.id}/tracks?${new URLSearchParams({
 				limit: `${limit}`,
 				offset: `${limit * (Number(page) - 1)}`
 			}).toString()}`
 		);
-
-		if (!tracksResponse.ok) {
-			throw error(tracksResponse.status, 'Failed to load playlist.');
+		if (!tracksRes.ok) {
+			throw error(tracksRes.status, 'Failed to load playlist!');
 		}
-
-		const tracksResponseJSON = await tracksResponse.json();
-
-		playlistResponseJSON.tracks = tracksResponseJSON;
+		const tracksResJSON = await tracksRes.json();
+		playlistResJSON.tracks = tracksResJSON;
 	}
 
 	let color = null;
-
-	if (playlistResponseJSON.images.length > 0) {
-		const colorResponse = await fetch(
+	if (playlistResJSON.images.length > 0) {
+		const colorRes = await fetch(
 			`/api/average-color?${new URLSearchParams({
-				image: playlistResponseJSON.images[0].url
+				image: playlistResJSON.images[0].url
 			}).toString()}`
 		);
 
-		if (colorResponse.ok) {
-			color = (await colorResponse.json()).color;
+		if (colorRes.ok) {
+			color = (await colorRes.json()).color;
 		}
 	}
 
 	return {
-		playlist: playlistResponseJSON,
+		playlist: playlistResJSON,
 		color,
-		title: playlistResponseJSON.name
+		title: playlistResJSON.name,
+		isFollowing
 	};
 };
