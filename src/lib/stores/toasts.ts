@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import uniquid from 'uniqid';
+import uniqid from 'uniqid';
 
 type ToastMessage = {
 	type: 'info' | 'warning' | 'error' | 'success';
@@ -32,7 +32,6 @@ function createToastsStore() {
 	function removeToast(id: string) {
 		update((toasts) => toasts.filter((t) => t.id !== id));
 	}
-
 	return {
 		subscribe,
 		info: (message: string, timeout?: number) =>
@@ -40,28 +39,28 @@ function createToastsStore() {
 				type: 'info',
 				message,
 				timeout,
-				id: uniquid()
+				id: uniqid()
 			}),
 		warning: (message: string, timeout?: number) =>
 			addToast({
 				type: 'warning',
 				message,
 				timeout,
-				id: uniquid()
+				id: uniqid()
 			}),
 		error: (message: string, timeout?: number) =>
 			addToast({
 				type: 'error',
 				message,
 				timeout,
-				id: uniquid()
+				id: uniqid()
 			}),
 		success: (message: string, timeout?: number) =>
 			addToast({
 				type: 'success',
 				message,
 				timeout,
-				id: uniquid()
+				id: uniqid()
 			}),
 		remove: (id: string) => removeToast(id)
 	};

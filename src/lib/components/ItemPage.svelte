@@ -12,7 +12,6 @@
 		class="banner-gradient"
 		style:background-image="linear-gradient(0deg, transparent, {color || 'var(--light-gray)'})"
 	/>
-
 	<div class="cover">
 		{#if image}
 			<img src={image} alt={title} />
@@ -22,18 +21,9 @@
 			</div>
 		{/if}
 	</div>
-
 	<div class="info">
-		{#if type}
-			<p class="type">
-				{type}
-			</p>
-		{/if}
-
-		<h1 class="title">
-			{title}
-		</h1>
-
+		{#if type} <p class="type">{type}</p>{/if}
+		<h1 class="title">{title}</h1>
 		<slot name="meta" />
 	</div>
 </div>
@@ -50,7 +40,6 @@
 		margin: 0 -30px;
 		padding: 30px;
 	}
-
 	.banner {
 		position: relative;
 		display: flex;
@@ -61,7 +50,6 @@
 			flex-direction: row;
 			align-items: flex-end;
 		}
-
 		.banner-gradient {
 			position: absolute;
 			top: 0;
@@ -72,14 +60,12 @@
 		}
 		.info {
 			z-index: 10;
-
 			.type {
 				text-transform: uppercase;
 				font-weight: 600;
 				font-size: functions.toRem(12);
 				margin: 0;
 			}
-
 			.title {
 				font-size: functions.toRem(32);
 				margin: 5px 0 0;
@@ -91,7 +77,6 @@
 				}
 			}
 		}
-
 		.cover {
 			margin-right: 40px;
 			z-index: 10;
@@ -99,7 +84,6 @@
 				margin-right: 0;
 				margin-bottom: 30px;
 			}
-
 			img,
 			.cover-placeholder {
 				width: 100%;
@@ -116,7 +100,6 @@
 					width: 230px;
 				}
 			}
-
 			.cover-placeholder {
 				display: flex;
 				align-items: center;

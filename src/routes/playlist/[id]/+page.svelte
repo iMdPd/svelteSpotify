@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	import { Button, ItemPage, TrackList, Pagination } from '$components';
-	import { Heart } from 'lucide-svelte';
-	import type { ActionData, PageData } from './$types';
+	import { Button, ItemPage } from '$components';
+	import TrackList from '$components/TrackList.svelte';
 	import { toasts } from '$stores';
+	import { Heart } from 'lucide-svelte';
+	import { tick } from 'svelte';
+	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -17,6 +19,7 @@
 	$: playlist = data.playlist;
 	$: tracks = data.playlist.tracks;
 	$: isFollowing = data.isFollowing;
+	$: currentPage = $page.url.searchParams.get('page') || 1;
 
 	let filteredTracks: SpotifyApi.TrackObjectFull[];
 
@@ -60,7 +63,9 @@
 
 	<div class="playlist-actions">
 		{#if data.user?.id === playlist.owner.id}
-			<Button element="a" variant="outline">Edit Playlist</Button>
+			<Button element="a" variant="outline" href="/playlist/{playlist.id}/edit"
+				>Edit Playlist</Button
+			>
 		{:else if isFollowing !== null}
 			<form
 				class="follow-form"
@@ -70,11 +75,13 @@
 					isLoadingFollow = true;
 					return async ({ result }) => {
 						isLoadingFollow = false;
+
 						if (result.type === 'success') {
 							await applyAction(result);
 							isFollowing = !isFollowing;
 						} else if (result.type === 'failure') {
-							toasts.error(result?.data?.followError);
+							toasts.error(result.data?.followError);
+							await tick();
 						} else {
 							await applyAction(result);
 						}
@@ -100,10 +107,39 @@
 		{/if}
 	</div>
 
-	{#if playlist?.tracks?.items?.length > 0}
+	{#if playlist.tracks.items.length > 0}
 		<TrackList tracks={filteredTracks} />
-
-		<Pagination paginatedList={tracks} on:loadmore={loadMoreTracks} {isLoading} />
+		{#if tracks.next}
+			<div class="load-more">
+				<Button element="button" variant="outline" disabled={isLoading} on:click={loadMoreTracks}
+					>Load More <span class="visually-hidden">Tracks</span></Button
+				>
+			</div>
+		{/if}
+		<div class="pagination">
+			<div class="previous">
+				{#if tracks.previous}
+					<Button
+						variant="outline"
+						element="a"
+						href="{$page.url.pathname}?{new URLSearchParams({
+							page: `${Number(currentPage) - 1}`
+						}).toString()}">← Previous Page</Button
+					>
+				{/if}
+			</div>
+			<div class="next">
+				{#if tracks.next}
+					<Button
+						variant="outline"
+						element="a"
+						href="{$page.url.pathname}?{new URLSearchParams({
+							page: `${Number(currentPage) + 1}`
+						}).toString()}">Next Page →</Button
+					>
+				{/if}
+			</div>
+		</div>
 	{:else}
 		<div class="empty-playlist">
 			<p>No items added to this playlist yet.</p>
@@ -117,53 +153,58 @@
 	.empty-playlist {
 		text-align: center;
 		margin-top: 40px;
-
 		p {
 			font-size: functions.toRem(22);
 			font-weight: 600;
 		}
-
 		:global(a) {
 			margin: 0 10px;
 		}
 	}
-
 	.playlist-description {
 		color: var(--light-gray);
 		font-size: functions.toRem(18);
 		margin-bottom: 0;
 	}
-
 	.meta {
 		font-size: functions.toRem(13);
 		margin-top: 10px;
-
 		span {
 			margin-right: 5px;
-
 			&:first-child {
 				font-weight: 600;
 			}
 		}
 	}
-
+	.load-more {
+		padding: 15px;
+		text-align: center;
+		:global(html.no-js) & {
+			display: none;
+		}
+	}
+	.pagination {
+		display: none;
+		margin-top: 40px;
+		justify-content: space-between;
+		:global(html.no-js) & {
+			display: flex;
+		}
+	}
 	.playlist-actions {
 		display: flex;
 		justify-content: flex-end;
 		margin: 10px 0 30px;
-
 		.follow-form {
 			:global(.button) {
 				display: flex;
 				align-items: center;
-
 				:global(svg) {
 					margin-right: 10px;
 					width: 22px;
 					height: 22px;
 				}
 			}
-
 			p.error {
 				text-align: right;
 				color: var(--error);

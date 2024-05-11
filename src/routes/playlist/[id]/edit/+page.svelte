@@ -2,11 +2,12 @@
 	import { PlaylistForm } from '$components';
 	import type { ActionData, PageData } from './$types';
 
-	export let data: PageData;
 	export let form: ActionData;
+	export let data: PageData;
+
+	$: playlist = data.playlist;
 </script>
 
-<h2>Add a New Playlist</h2>
+<h2>{data?.title}</h2>
 
-<PlaylistForm userID={data.user?.id} {form} />
-
+<PlaylistForm {form} {playlist} action="?redirect" />

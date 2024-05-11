@@ -14,7 +14,6 @@ export const actions: Actions = {
 			return fail(res.status, { followError: res.statusText });
 		}
 	},
-
 	unFollowPlaylist: async ({ cookies, params, fetch }) => {
 		const res = await fetch(`${SPOTIFY_BASE_URL}/playlists/${params.id}/followers`, {
 			method: 'DELETE',

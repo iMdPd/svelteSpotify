@@ -18,7 +18,7 @@
 	export let variant: 'solid' | 'outline' | 'danger' = 'solid';
 	export let className: string = '';
 
-	let node: HTMLButtonElement | HTMLAnchorElement;
+	let node: HTMLAnchorElement | HTMLButtonElement;
 
 	export function focus() {
 		node.focus();

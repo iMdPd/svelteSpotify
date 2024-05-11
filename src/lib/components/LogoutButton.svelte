@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import Button from './Button.svelte';
+	import { Button } from '$components';
 </script>
 
 <form

@@ -17,20 +17,11 @@
 	let audio: HTMLAudioElement;
 	let paused = true;
 
-	function handlePlay() {
-		if (paused) {
-			audio.play();
-		} else {
-			audio.pause();
-		}
-	}
-
 	function onPlay() {
 		if (current && current !== audio) {
 			current.currentTime = 0;
 			current.pause();
 		}
-
 		current = audio;
 		dispatch('play', { track });
 	}
@@ -49,12 +40,20 @@
 		src={track.preview_url}
 		preload="none"
 	/>
-
-	<button aria-label={paused ? `Play ${track.name}` : `Pause ${track.name}`} on:click={handlePlay}>
+	<button
+		aria-label={paused ? `Play ${track.name}` : `Pause ${track.name}`}
+		on:click={() => {
+			if (paused) {
+				audio.play();
+			} else {
+				audio.pause();
+			}
+		}}
+	>
 		{#if paused}
-			<Play color="var(--text-color)" aria-hidden focusable="false" />
+			<Play color="var(--text-color)" focusable="false" aria-hidden />
 		{:else}
-			<Pause color="var(--text-color)" aria-hidden focusable="false" />
+			<Pause color="var(--text-color)" focusable="false" aria-hidden />
 		{/if}
 	</button>
 </div>
@@ -63,7 +62,6 @@
 	.player {
 		audio {
 			display: none;
-      
 			:global(html.no-js) & {
 				display: block;
 				width: 100%;
@@ -76,13 +74,11 @@
 			background: none;
 			border: none;
 			cursor: pointer;
-
 			:global(svg) {
 				fill: var(--text-color);
 				width: 12px;
 				height: 12px;
 			}
-
 			:global(html.no-js) & {
 				display: none;
 			}
