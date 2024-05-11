@@ -6,5 +6,6 @@ export { default as Player } from './Player.svelte';
 export { default as Header } from './Header.svelte';
 export { default as IconButton } from './IconButton.svelte';
 export { default as TrackList } from './TrackList.svelte';
+export { default as Pagination } from './Pagination.svelte';
 export { default as Card } from './Card.svelte';
 export { default as Toasts } from './Toasts.svelte';

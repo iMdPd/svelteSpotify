@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	import { Button, ItemPage } from '$components';
-	import TrackList from '$components/TrackList.svelte';
+	import { Button, ItemPage, TrackList, Pagination } from '$components';
 	import { Heart } from 'lucide-svelte';
 	import type { ActionData, PageData } from './$types';
 	import { toasts } from '$stores';
-	import { error } from '@sveltejs/kit';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -19,7 +17,6 @@
 	$: playlist = data.playlist;
 	$: tracks = data.playlist.tracks;
 	$: isFollowing = data.isFollowing;
-	$: currentPage = $page.url.searchParams.get('page') || 1;
 
 	let filteredTracks: SpotifyApi.TrackObjectFull[];
 
@@ -105,37 +102,8 @@
 
 	{#if playlist.tracks.items.length > 0}
 		<TrackList tracks={filteredTracks} />
-		{#if tracks.next}
-			<div class="load-more">
-				<Button element="button" variant="outline" disabled={isLoading} on:click={loadMoreTracks}
-					>Load More <span class="visually-hidden">Tracks</span></Button
-				>
-			</div>
-		{/if}
-		<div class="pagination">
-			<div class="previous">
-				{#if tracks.previous}
-					<Button
-						variant="outline"
-						element="a"
-						href="{$page.url.pathname}?{new URLSearchParams({
-							page: `${Number(currentPage) - 1}`
-						}).toString()}">← Previous Page</Button
-					>
-				{/if}
-			</div>
-			<div class="next">
-				{#if tracks.next}
-					<Button
-						variant="outline"
-						element="a"
-						href="{$page.url.pathname}?{new URLSearchParams({
-							page: `${Number(currentPage) + 1}`
-						}).toString()}">Next Page →</Button
-					>
-				{/if}
-			</div>
-		</div>
+
+		<Pagination paginatedList={tracks} on:loadmore={loadMoreTracks} {isLoading} />
 	{:else}
 		<div class="empty-playlist">
 			<p>No items added to this playlist yet.</p>
