@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { Button, Card, Pagination } from '$components';
+	import { Button, Card, Pagination, Modal, PlaylistForm } from '$components';
 	import { toasts } from '$stores';
+	import MicroModal from 'micromodal';
 	import type { PageData } from './$types';
+	import type { ActionData } from './new/$types';
 
 	export let data: PageData;
+	export let form: ActionData;
 
 	let isLoading = false;
 
@@ -30,7 +33,14 @@
 	{#if playlists?.items?.length > 0}
 		<div class="title">
 			<h1>{data.title}</h1>
-			<Button element="a" href="/playlists/new">+ Add New</Button>
+			<Button
+				element="a"
+				href="/playlists/new"
+				on:click={(e) => {
+					e.preventDefault();
+					MicroModal.show('add-playlist-modal');
+				}}>+ Add New</Button
+			>
 		</div>
 		<div class="grid-items">
 			{#each playlists.items as item}
@@ -45,6 +55,10 @@
 		</div>
 	{/if}
 </div>
+
+<Modal id="add-playlist-modal" title="Add a New Playlist">
+	<PlaylistForm {form} userID={data?.user?.id} action="/playlists/new" />
+</Modal>
 
 <style lang="scss">
 	.content {

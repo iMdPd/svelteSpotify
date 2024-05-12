@@ -3,14 +3,20 @@
 	import { page } from '$app/stores';
 	import NProgress from 'nprogress';
 	import { hideAll } from 'tippy.js';
+	import type { LayoutData } from './$types';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import MicroModal from 'micromodal';
+	import { browser } from '$app/environment';
+
 	import 'nprogress/nprogress.css';
 	import 'modern-normalize/modern-normalize.css';
 	import '../styles/main.scss';
-	import type { LayoutData } from './$types';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
-	import { toasts } from '$stores';
 
 	NProgress.configure({ showSpinner: false });
+
+	if (browser) {
+		MicroModal.init();
+	}
 
 	let topbar: HTMLElement;
 	let scrollY: number;
@@ -22,7 +28,8 @@
 
 	export let data: LayoutData;
 
-	$: user = data.user;
+	$: user = data?.user;
+	$: userAllPlaylists = data?.userAllPlaylists;
 
 	afterNavigate(() => {
 		NProgress.done();
@@ -49,7 +56,7 @@
 <div id="main">
 	{#if user}
 		<div id="sidebar">
-			<Navigation desktop={true} />
+			<Navigation desktop={true} {userAllPlaylists} />
 		</div>
 	{/if}
 	<div id="content">
@@ -60,7 +67,7 @@
 					style:background-color={$page.data.color ? $page.data.color : 'var(--header-color)'}
 					style:opacity={`${headerOpacity}`}
 				/>
-				<Header />
+				<Header {userAllPlaylists} />
 			</div>
 		{/if}
 		<main id="main-content" class:logged-in={user}>
