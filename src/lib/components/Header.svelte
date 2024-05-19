@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { LogoutButton, Navigation } from '$components';
+	import { LogoutButton, Navigation, SearchForm, HeaderNav } from '$components';
 	import { page } from '$app/stores';
 	import { ChevronDown, ExternalLink } from 'lucide-svelte';
 	import { tippy } from '$actions';
-	import SearchForm from './SearchForm.svelte';
 
 	export let userAllPlaylists: SpotifyApi.PlaylistObjectSimplified[] | undefined;
 
@@ -16,6 +15,9 @@
 		{#if browser}
 			<Navigation desktop={false} {userAllPlaylists} />
 		{/if}
+
+		<HeaderNav />
+
 		{#if $page.url.pathname.startsWith('/search')}
 			<div class="search-form">
 				<SearchForm />
@@ -41,7 +43,7 @@
 					hideOnPopperBlur: true
 				}}
 			>
-				{#if user?.images && user?.images?.length > 0}
+				{#if user?.images && user.images.length > 0}
 					<img src={user.images[0].url} alt="" />
 				{/if}
 				{user?.display_name} <span class="visually-hidden">Profile menu</span>
@@ -67,12 +69,15 @@
 
 <style lang="scss">
 	.search-form {
+		margin-left: 20px;
 		display: none;
 		@include breakpoint.up('lg') {
 			display: block;
 		}
+		:global(html.no-js) & {
+			margin-left: 0px;
+		}
 	}
-
 	.content {
 		display: flex;
 		justify-content: space-between;
@@ -82,6 +87,10 @@
 			@include breakpoint.down('md') {
 				justify-content: flex-start;
 			}
+		}
+		.left {
+			display: flex;
+			align-items: center;
 		}
 	}
 	.profile-button {
