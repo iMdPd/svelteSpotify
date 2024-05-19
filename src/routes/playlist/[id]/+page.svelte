@@ -51,8 +51,8 @@
 </script>
 
 <ItemPage
-	title={playlist.name}
-	image={playlist.images.length > 0 ? playlist.images[0].url : undefined}
+	title={playlist?.name}
+	image={playlist?.images?.length > 0 ? playlist?.images[0]?.url : undefined}
 	{color}
 	type={playlist.type}
 >
