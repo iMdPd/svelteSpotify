@@ -4,7 +4,7 @@
 	import { Button, LogoutButton } from '$components';
 
 	let isRetrying = false;
-	const retryRoutes = ['/album/[id]', '/playlist/[id]'];
+	const retryRoutes = ['/album/[id]', '/playlist/[id]', '/artist/[id]'];
 </script>
 
 <svelte:head>
@@ -59,7 +59,7 @@
 
 	.buttons {
 		margin-top: 40px;
-		
+
 		:global(a) {
 			margin: 0 5px;
 		}
