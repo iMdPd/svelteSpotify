@@ -52,7 +52,7 @@
 				</div>
 
 				<div class="view-all-button">
-					<Button variant="outline" element="a" href="/profile/artists">
+					<Button variant="outline" element="a" href="/profile/following">
 						View All
 						<span class="visually-hidden">artist that you are following</span>
 					</Button>
