@@ -4,14 +4,14 @@
 	import { Clock8, ListPlus, ListX } from 'lucide-svelte';
 	import playingGif from '$assets/playing.gif';
 	import { tippy } from '$actions';
-	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	let currentlyPlaying: string | null = null;
 	let isPaused: boolean = false;
 
 	export let tracks: SpotifyApi.TrackObjectFull[] | SpotifyApi.TrackObjectSimplified[];
 	export let isOwner: boolean = false;
-	export let userPlaylist: SpotifyApi.PlaylistObjectSimplified[] | undefined;
+	export let userPlaylists: SpotifyApi.PlaylistObjectSimplified[] | undefined;
 </script>
 
 <div class="tracks">
@@ -73,16 +73,16 @@
 						title="Add {track.name} to a playlist"
 						aria-label="Add {track.name} to a playlist"
 						class="add-pl-button"
-						disabled={!userPlaylist}
+						disabled={!userPlaylists}
 						use:tippy={{
-							content: document.getElementById(`${track.id}-playlist-menu`) || undefined,
+							content: document.getElementById(`${track.id}-playlists-menu`) || undefined,
 							allowHTML: true,
 							trigger: 'click',
-							placement: 'bottom-end',
 							interactive: true,
 							theme: 'menu',
+							placement: 'bottom-end',
 							onMount: () => {
-								const template = document.getElementById(`${track.id}-playlist-menu`);
+								const template = document.getElementById(`${track.id}-playlists-menu`);
 								if (template) {
 									template.style.display = 'block';
 								}
@@ -91,24 +91,22 @@
 					>
 						<ListPlus aria-hidden focusable="false" />
 					</button>
-					{#if userPlaylist}
-						<div class="playlists-menu" id="{track.id}-playlist-menu" style="display: none;">
+					{#if userPlaylists}
+						<div class="playlists-menu" id="{track.id}-playlists-menu" style="display: none;">
 							<div class="playlists-menu-content">
-								<form method="POST">
-									<input hidden value={track.id} />
+								<form method="POST" action="/playlist?/addItem&redirect={$page.url.pathname}">
+									<input hidden value={track.id} name="track" />
 									<div class="field">
-										<select aria-label="Playlist" name="Playlist">
-											{#each userPlaylist as playlist}
+										<select aria-label="Playlist" name="playlist">
+											{#each userPlaylists as playlist}
 												<option value={playlist.id}>{playlist.name}</option>
 											{/each}
 										</select>
 									</div>
 									<div class="submit-button">
-										<Button element="button" type="submit"
-											>Add <span class="visually-hidden">
-												{track.name} to selected playlist</span
-											></Button
-										>
+										<Button element="button" type="submit">
+											Add <span class="visually-hidden"> {track.name} to selected playlist.</span>
+										</Button>
 									</div>
 								</form>
 							</div>
@@ -291,7 +289,7 @@
 					}
 					.submit-button {
 						margin-top: 10px;
-						text-align-last: right;
+						text-align: right;
 					}
 				}
 			}

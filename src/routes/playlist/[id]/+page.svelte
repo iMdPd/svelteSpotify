@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { Button, ItemPage, Modal, PlaylistForm } from '$components';
+	import { Button, ItemPage, Modal } from '$components';
+	import PlaylistForm from '$components/PlaylistForm.svelte';
 	import TrackList from '$components/TrackList.svelte';
 	import { toasts } from '$stores';
 	import { Heart } from 'lucide-svelte';
+	import MicroModal from 'micromodal';
 	import { tick } from 'svelte';
 	import type { ActionData, PageData } from './$types';
 	import type { ActionData as EditActionData } from './edit/$types';
-	import MicroModal from 'micromodal';
-	import { invalidateAll } from '$app/navigation';
 
 	export let data: PageData;
 	export let form: ActionData | EditActionData;
@@ -50,8 +51,8 @@
 </script>
 
 <ItemPage
-	title={playlist?.name}
-	image={playlist?.images?.length > 0 ? playlist.images[0].url : undefined}
+	title={playlist.name}
+	image={playlist.images.length > 0 ? playlist.images[0].url : undefined}
 	{color}
 	type={playlist.type}
 >
@@ -67,13 +68,13 @@
 	<div class="playlist-actions">
 		{#if data.user?.id === playlist.owner.id}
 			<Button
+				element="a"
+				variant="outline"
+				href="/playlist/{playlist.id}/edit"
 				on:click={(e) => {
 					e.preventDefault();
 					MicroModal.show('edit-playlist-modal');
-				}}
-				element="a"
-				variant="outline"
-				href="/playlist/{playlist.id}/edit">Edit Playlist</Button
+				}}>Edit Playlist</Button
 			>
 		{:else if isFollowing !== null}
 			<form
@@ -120,8 +121,8 @@
 	{#if playlist.tracks.items.length > 0}
 		<TrackList
 			tracks={filteredTracks}
-			isOwner={data?.user?.id === playlist?.owner?.id}
-			userPlaylist={data?.userAllPlaylists?.filter((pl) => pl?.owner?.id === data?.user?.id)}
+			isOwner={data.user?.id === playlist.owner.id}
+			userPlaylists={data.userAllPlaylists?.filter((pl) => pl.owner.id === data.user?.id)}
 		/>
 		{#if tracks.next}
 			<div class="load-more">
@@ -163,13 +164,14 @@
 	{/if}
 </ItemPage>
 
-<Modal id="edit-playlist-modal" title="Edit {playlist?.name}">
+<Modal id="edit-playlist-modal" title="Edit {playlist.name}">
 	<PlaylistForm
-		action="/playlist/{playlist?.id}/edit"
+		action="/playlist/{playlist.id}/edit"
 		{playlist}
 		form={form && 'editForm' in form ? form : null}
 		on:success={() => {
 			MicroModal.close('edit-playlist-modal');
+			// invalidate(`/api/spotify/playlists/${playlist.id}`);
 			invalidateAll();
 		}}
 	/>
